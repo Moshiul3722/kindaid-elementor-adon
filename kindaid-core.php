@@ -24,3 +24,16 @@ function register_kindaid_elementor_widget($widgets_manager)
     require_once(__DIR__ . '/widgets/kindaid_facts.php');
 }
 add_action('elementor/widgets/register', 'register_kindaid_elementor_widget');
+
+// Elementor custom category
+function kindaid_elementor_widget_categories($elements_manager)
+{
+    $elements_manager->add_category(
+        'kindaid-core',
+        [
+            'title' => esc_html__('Kindaid Core', 'textdomain'),
+            'icon' => 'fa fa-plug',
+        ]
+    );
+}
+add_action('elementor/elements/categories_registered', 'kindaid_elementor_widget_categories');

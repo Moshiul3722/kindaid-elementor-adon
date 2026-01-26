@@ -19,7 +19,7 @@ class Kindaid_Hero extends \Elementor\Widget_Base
 
     public function get_categories(): array
     {
-        return ['basic'];
+        return ['kindaid-core'];
     }
 
     public function get_keywords(): array

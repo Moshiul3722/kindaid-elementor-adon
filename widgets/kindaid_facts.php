@@ -19,7 +19,7 @@ class Kindaid_Fact extends \Elementor\Widget_Base
 
     public function get_categories(): array
     {
-        return ['basic'];
+        return ['kindaid-core'];
     }
 
     public function get_keywords(): array
@@ -109,7 +109,22 @@ class Kindaid_Fact extends \Elementor\Widget_Base
 
 ?>
         <!-- tp-hero-area-start -->
+        <div class="tp-fact-area tp-bg-mulberry pt-40 pb-35">
+            <div class="container container-1424">
+                <div class="row">
+                    <?php foreach ($settings['fact_list'] as $item): ?>
+                        <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6">
+                            <div class="tp-fact-item tp-fact-item-border text-center pt-20 pb-25">
+                                <h2 class="tp-fact-title mb-5"><span class="purecounter" data-purecounter-duration="2" data-purecounter-end="64"><?php echo esc_html($item['number']) ?></span><?php echo esc_html($item['sign']) ?></h2>
+                                <p class="tp-fact-dec mb-0"><?php echo esc_html($item['content']) ?></p>
+                            </div>
+                        </div>
 
+                    <?php endforeach; ?>
+
+                </div>
+            </div>
+        </div>
         <!-- tp-hero-area-end -->
 <?php
     }
