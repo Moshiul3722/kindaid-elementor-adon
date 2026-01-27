@@ -22,6 +22,7 @@ function register_kindaid_elementor_widget($widgets_manager)
 {
     require_once(__DIR__ . '/widgets/kindaid_hero.php');
     require_once(__DIR__ . '/widgets/kindaid_facts.php');
+    require_once(__DIR__ . '/widgets/kindaid_services_list.php');
 }
 add_action('elementor/widgets/register', 'register_kindaid_elementor_widget');
 
