@@ -44,6 +44,38 @@ class Kindaid_Services_List extends \Elementor\Widget_Base
             ]
         );
 
+
+        $this->add_control(
+            'serv_title',
+            [
+                'label' => esc_html__('Title', 'textdomain'),
+                'type' => \Elementor\Controls_Manager::TEXT,
+                'default' => esc_html__('Default title', 'textdomain'),
+                'placeholder' => esc_html__('Type your title here', 'textdomain'),
+            ]
+        );
+
+        $this->add_control(
+            'serv_sub_title',
+            [
+                'label' => esc_html__('Sub Title', 'textdomain'),
+                'type' => \Elementor\Controls_Manager::TEXT,
+                'default' => esc_html__('Default title', 'textdomain'),
+                'placeholder' => esc_html__('Type your title here', 'textdomain'),
+            ]
+        );
+
+        $this->add_control(
+            'serv_banner_image',
+            [
+                'label' => esc_html__('Choose Image', 'textdomain'),
+                'type' => \Elementor\Controls_Manager::MEDIA,
+                'default' => [
+                    'url' => \Elementor\Utils::get_placeholder_image_src(),
+                ],
+            ]
+        );
+
         $repeater = new \Elementor\Repeater();
 
         $repeater->add_control(
@@ -91,15 +123,17 @@ class Kindaid_Services_List extends \Elementor\Widget_Base
         );
 
         $repeater->add_control(
-            'serv_description',
+            'serv_svg_icon',
             [
-                'label' => esc_html__('Description', 'kindaid'),
+                'label' => esc_html__('SVG Icon', 'textdomain'),
                 'type' => \Elementor\Controls_Manager::TEXTAREA,
-                'default' => esc_html__(' ', 'textdomain'),
+                // 'default' => esc_html__('Default description', 'textdomain'),
+                // 'placeholder' => esc_html__('Type your description here', 'textdomain'),
+                'condition' => [
+                    'icon_style' => 'svg',
+                ],
             ]
         );
-
-
 
         $repeater->add_control(
             'serv_title',
@@ -161,7 +195,6 @@ class Kindaid_Services_List extends \Elementor\Widget_Base
             ]
         );
 
-
         $this->end_controls_section();
     }
 
@@ -172,29 +205,50 @@ class Kindaid_Services_List extends \Elementor\Widget_Base
     {
         $settings = $this->get_settings_for_display();
 
+
+
+        $serve_banner_image_url = !empty($settings['serv_banner_image']['id']) ? wp_get_attachment_image_url($settings['serv_banner_image']['id'], 'full') : $settings['serv_banner_image']['url'];
+
+        $serve_bannaer_image_alt = !empty($settings['serv_banner_image']['id']) ? get_post_meta($settings['serv_banner_image']['id'], '_wp_attachment_image_alt') : '';
+
+
 ?>
         <!-- tp-service-area-start -->
         <div class="tp-service-area tp-bg-mulberry p-relative">
-            <img class="tp-service-shape" src="assets/img/service/shape.png" alt="">
+            <img class="tp-service-shape" src="<?php echo get_template_directory_uri(); ?>/assets/img/service/shape.png" alt="">
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-xxl-3 col-xl-4 d-none d-xl-block">
                         <div class="tp-service-thumb">
-                            <img src="assets/img/service/thumb.png" alt="">
+                            <img src="<?php echo $serve_banner_image_url; ?>" alt="<?php echo $serve_bannaer_image_alt; ?>">
                         </div>
                     </div>
                     <div class="col-xxl-8 col-xl-8">
                         <div class="tp-service-content-wrap pt-95 pb-90 pr-90">
                             <div class="tp-service-title-wrap mb-40">
-                                <span class="tp-section-subtitle tp-section-subtitle-yellow d-inline-block mb-10 wow fadeInUp" data-wow-duration=".9s" data-wow-delay=".3s">How we help</span>
-                                <h2 class="tp-section-title tp-section-title-white wow fadeInUp" data-wow-duration=".9s" data-wow-delay=".5s">Delivering Solutions</h2>
+                                <span class="tp-section-subtitle tp-section-subtitle-yellow d-inline-block mb-10 wow fadeInUp" data-wow-duration=".9s" data-wow-delay=".3s"><?php echo esc_html($settings['serv_sub_title']) ?></span>
+                                <h2 class="tp-section-title tp-section-title-white wow fadeInUp" data-wow-duration=".9s" data-wow-delay=".5s"><?php echo esc_html($settings['serv_title']) ?></h2>
                             </div>
                             <div class="row">
-                                <?php foreach ($settings['serv_list'] as $item): ?>
+                                <?php foreach ($settings['serv_list'] as $item):
+
+                                    if (!empty($item['serv_image'])) {
+
+                                        $image_url = !empty($item['serv_image']['id']) ? wp_get_attachment_image_url($item['serv_image']['id'], 'full') : $item['serv_image']['url'];
+
+                                        $image_alt = !empty($item['serv_image']['id']) ? get_post_meta($item['serv_image']['id'], '_wp_attachment_image_alt') : '';
+                                    }
+                                ?>
                                     <div class="col-xxl-3 col-xl-6 col-lg-6 col-md-6">
                                         <div class="tp-service-item icon-anime-wrap mb-25 wow fadeInUp" data-wow-duration=".9s" data-wow-delay=".3s">
                                             <span class="tp-service-icon icon-anime mb-25 d-inline-block">
-                                                <?php \Elementor\Icons_Manager::render_icon($item['serv_icon'], ['aria-hidden' => 'true']); ?>
+                                                <?php if ($item['icon_style'] == 'icon'): ?>
+                                                    <?php \Elementor\Icons_Manager::render_icon($item['serv_icon'], ['aria-hidden' => 'true']); ?>
+                                                <?php elseif ($item['icon_style'] == 'image'): ?>
+                                                    <img src="<?php echo esc_url($image_url); ?>" alt="<?php echo esc_attr($image_alt); ?>">
+                                                <?php else: ?>
+                                                    <?php echo kd_kses($item['serv_svg_icon']) ?>
+                                                <?php endif; ?>
                                             </span>
                                             <?php if ($item['serv_btn_url']): ?>
                                                 <h3 class="tp-service-title mb-10">
