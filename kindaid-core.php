@@ -22,12 +22,14 @@ require_once(__DIR__ . '/include/kindaid-core-helper.php');
 // wp custom widget
 function register_kindaid_elementor_widget($widgets_manager)
 {
+    require_once(__DIR__ . '/widgets/kindaid_Blog_Post.php');
     require_once(__DIR__ . '/widgets/kindaid_hero.php');
     require_once(__DIR__ . '/widgets/kindaid_facts.php');
     require_once(__DIR__ . '/widgets/kindaid_services_list.php');
     require_once(__DIR__ . '/widgets/Kindaid_Community.php');
     require_once(__DIR__ . '/widgets/Kindaid_Faq.php');
     require_once(__DIR__ . '/widgets/Kindaid_Team_Section.php');
+    require_once(__DIR__ . '/widgets/Kindaid_Work_Info.php');
 }
 add_action('elementor/widgets/register', 'register_kindaid_elementor_widget');
 
