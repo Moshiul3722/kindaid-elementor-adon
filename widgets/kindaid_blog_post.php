@@ -39,14 +39,88 @@ class Kindaid_Blog_Post extends \Elementor\Widget_Base
         $this->start_controls_section(
             'content_section',
             [
-                'label' => esc_html__('Fact List', 'textdomain'),
+                'label' => esc_html__('Blog Post', 'textdomain'),
                 'tab' => \Elementor\Controls_Manager::TAB_CONTENT,
             ]
         );
 
+        $this->add_control(
+            'number_post',
+            [
+                'label' => esc_html__('Number of Post', 'textdomain'),
+                'type' => \Elementor\Controls_Manager::NUMBER,
+                'min' => 1,
+                'max' => 10,
+                'step' => 1,
+                'default' => 1,
+            ]
+        );
 
+        $this->add_control(
+            'order_post',
+            [
+                'label'   => esc_html__('Order', 'textdomain'),
+                'type'    => \Elementor\Controls_Manager::SELECT,
+                'default' => 'ASC',
+                'options' => [
+                    'ASC'  => esc_html__('ASC', 'textdomain'),
+                    'DESC' => esc_html__('DESC', 'textdomain'),
+                ]
+            ]
+        );
 
+        $this->add_control(
+            'post_in',
+            [
+                'label' => esc_html__('Post In', 'textdomain'),
+                'type' => \Elementor\Controls_Manager::SELECT2,
+                'label_block' => true,
+                'multiple' => true,
+                'options' => get_all_post()
+            ]
+        );
 
+        $this->add_control(
+            'post_not_in',
+            [
+                'label' => esc_html__('Post Not In', 'textdomain'),
+                'type' => \Elementor\Controls_Manager::SELECT2,
+                'label_block' => true,
+                'multiple' => true,
+                'options' => get_all_post()
+            ]
+        );
+
+        $this->add_control(
+            'post_order_by',
+            [
+                'label' => esc_html__('Order By', 'textdomain'),
+                'type' => \Elementor\Controls_Manager::SELECT,
+                'default' => 'date',
+                'options' => [
+                    'ID'            => 'Post ID',
+                    'author'        => 'Post Author',
+                    'title'         => 'Title',
+                    'date'          => 'Date',
+                    'modified'      => 'Last Modified Date',
+                    'parent'        => 'Parent Id',
+                    'rand'          => 'Random',
+                    'comment_count' => 'Comment Count',
+                    'menu_order'    => 'Menu Order',
+                ]
+            ]
+        );
+
+        $this->add_control(
+            'show_category',
+            [
+                'label' => esc_html__('Post Categories', 'textdomain'),
+                'type' => \Elementor\Controls_Manager::SELECT2,
+                'label_block' => true,
+                'multiple' => true,
+                'options' => get_all_category()
+            ]
+        );
 
 
         $this->end_controls_section();
@@ -60,16 +134,30 @@ class Kindaid_Blog_Post extends \Elementor\Widget_Base
         $settings = $this->get_settings_for_display();
 
         $args = array(
-            'post_type' => array('post'),
-            'post_status' => array('publish', 'private'),
-            'orderby' => array('title' => 'DESC', 'menu_order' => 'ASC'),
-            'posts_per_page' => 3,
+            'post_type'      => array('post'),
+            'post_status'    => array('publish', 'private'),
+            'order'          => $settings['order_post'],
+            'orderby'        => $settings['post_order_by'],
+            'posts_per_page' => $settings['number_post'],
+            'post__in'       => $settings['post_in'],
+            'post__ont_in'   => $settings['post_not_in'],
+
         );
+
+        if (!empty($settings['show_category'])) {
+            $args['tax_query'] = array(
+                array(
+                    'taxonomy'         => 'category',
+                    'terms'            => $settings['show_category'],
+                    'field'            => 'slug',
+                    'operator'         => 'IN',
+                    'include_children' => true,
+                )
+            );
+        }
 
         // The Query.
         $the_query = new WP_Query($args);
-
-        // $categories = get_the_category($the_query);
 
         // echo '<pre>';
         // var_dump($categories);
@@ -116,7 +204,6 @@ class Kindaid_Blog_Post extends \Elementor\Widget_Base
                                                 foreach ($limited_categories as $cat) {
                                             ?>
                                                     <span class="dvdr"><a href="<?php echo esc_url(get_category_link($cat->term_id)) ?>"><?php echo $cat->name; ?></a></span>
-
                                             <?php
                                                 }
                                             }

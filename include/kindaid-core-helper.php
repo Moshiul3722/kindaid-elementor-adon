@@ -1,4 +1,41 @@
 <?php
+// Get all post
+function get_all_post($post_type_name = 'post')
+{
+    $posts = get_posts(array(
+        'post_type'      => $post_type_name,
+        'orderby'        => 'name',
+        'order'          => 'ASC',
+        'posts_per_page' => -1,
+    ));
+
+    $posts_list = [];
+
+    foreach ($posts as $post) {
+        $posts_list[$post->ID] = $post->post_title;
+    }
+
+    return $posts_list;
+}
+
+// Get all category
+function get_all_category($category = 'category')
+{
+    $categories = get_categories(array(
+        'taxonomy' => $category,
+        'orderby'  => 'name',
+        'order'    => 'ASC',
+    ));
+
+    $category_list = [];
+
+    foreach ($categories as $category) {
+        $category_list[$category->slug] = $category->name;
+    }
+
+    return $category_list;
+}
+
 
 /**
  * Sanitize SVG markup for front-end display.

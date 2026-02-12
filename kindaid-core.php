@@ -30,6 +30,7 @@ function register_kindaid_elementor_widget($widgets_manager)
     require_once(__DIR__ . '/widgets/Kindaid_Faq.php');
     require_once(__DIR__ . '/widgets/Kindaid_Team_Section.php');
     require_once(__DIR__ . '/widgets/Kindaid_Work_Info.php');
+    require_once(__DIR__ . '/widgets/Kindaid_Call_Us.php');
 }
 add_action('elementor/widgets/register', 'register_kindaid_elementor_widget');
 
